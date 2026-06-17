@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+:root {
+  --hours-color: #D8BFD8;
+  --minutes-color: #C8A2C8;
+  --radius: 18px;
+}
+
+body {
+  margin: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-family: Arial, sans-serif;
+  background: transparent;
+}
+
+.clock {
+  display: flex;
+  position: relative;
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+}
+
+.block {
+  width: 120px;
+  height: 120px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 64px;
+  font-weight: bold;
+  color: white;
+}
+
+.hours {
+  background: var(--hours-color);
+}
+
+.minutes {
+  background: var(--minutes-color);
+}
+
+.ampm {
+  position: absolute;
+  bottom: 10px;
+  right: 12px;
+  font-size: 16px;
+  color: white;
+  font-weight: bold;
+}
+
+.date {
+  margin-top: 10px;
+  font-size: 14px;
+  color: #666;
+}
+</style>
+</head>
+
+<body>
+
+<div class="clock">
+  <div class="block hours" id="hours">12</div>
+  <div class="block minutes" id="minutes">00</div>
+  <div class="ampm" id="ampm">PM</div>
+</div>
+
+<div class="date" id="date">Monday, Jan 1</div>
+
+<script>
+function updateClock() {
+  const now = new Date();
+
+  let hours = now.getHours();
+  const minutes = now.getMinutes();
+  const ampm = hours >= 12 ? "PM" : "AM";
+
+  hours = hours % 12;
+  hours = hours ? hours : 12;
+
+  document.getElementById("hours").textContent =
+    String(hours).padStart(2, "0");
+
+  document.getElementById("minutes").textContent =
+    String(minutes).padStart(2, "0");
+
+  document.getElementById("ampm").textContent = ampm;
+
+  const options = { weekday: 'long', month: 'short', day: 'numeric' };
+  document.getElementById("date").textContent =
+    now.toLocaleDateString(undefined, options);
+}
+
+updateClock();
+setInterval(updateClock, 1000);
+</script>
+
+</body>
+</html>
