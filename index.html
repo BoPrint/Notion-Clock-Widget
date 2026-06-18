@@ -1,84 +1,131 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <style>
+
+/* ===================================
+   CUSTOMIZE YOUR COLORS HERE
+   =================================== */
+
 :root {
-  --hours-color: #D8BFD8;
-  --minutes-color: #C8A2C8;
-  --radius: 18px;
+  --hours-color: #E8B4A0;
+  --minutes-color: #F4E9D8;
+
+  --text-light: #FFFFFF;
+  --shadow: rgba(0,0,0,0.12);
+}
+
+* {
+  box-sizing: border-box;
 }
 
 body {
   margin: 0;
-  height: 100vh;
+  min-height: 100vh;
+
   display: flex;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
-  font-family: Arial, sans-serif;
+
   background: transparent;
+  font-family: Arial, sans-serif;
 }
 
 .clock {
   display: flex;
-  position: relative;
-  border-radius: var(--radius);
-  overflow: hidden;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+  gap: 4px;
 }
 
 .block {
-  width: 120px;
-  height: 120px;
+  position: relative;
+
+  width: min(32vw, 140px);
+  height: min(40vw, 180px);
+
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 64px;
-  font-weight: bold;
-  color: white;
+
+  box-shadow: 0 6px 18px var(--shadow);
 }
 
 .hours {
   background: var(--hours-color);
+  border-radius: 28px 0 0 28px;
 }
 
 .minutes {
   background: var(--minutes-color);
+  border-radius: 0 28px 28px 0;
+}
+
+.hours-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.date {
+  font-size: clamp(10px, 2vw, 12px);
+  font-weight: 600;
+  color: var(--text-light);
+  letter-spacing: 1px;
+  opacity: 0.95;
+  text-transform: uppercase;
+}
+
+.time {
+  font-size: clamp(42px, 10vw, 72px);
+  font-weight: 700;
+  line-height: 1;
+  color: var(--text-light);
 }
 
 .ampm {
   position: absolute;
-  bottom: 10px;
-  right: 12px;
-  font-size: 16px;
-  color: white;
-  font-weight: bold;
+  bottom: 12px;
+  right: 14px;
+
+  font-size: clamp(11px, 2vw, 16px);
+  font-weight: 700;
+
+  color: rgba(255,255,255,0.9);
 }
 
-.date {
-  margin-top: 10px;
-  font-size: 14px;
-  color: #666;
-}
 </style>
 </head>
 
 <body>
 
 <div class="clock">
-  <div class="block hours" id="hours">12</div>
-  <div class="block minutes" id="minutes">00</div>
-  <div class="ampm" id="ampm">PM</div>
+
+  <div class="block hours">
+    <div class="hours-content">
+      <div class="date" id="date">MON JUN 18</div>
+      <div class="time" id="hours">12</div>
+    </div>
+  </div>
+
+  <div class="block minutes">
+    <div class="time" id="minutes">00</div>
+    <div class="ampm" id="ampm">PM</div>
+  </div>
+
 </div>
 
-<div class="date" id="date">Monday, Jan 1</div>
-
 <script>
+
 function updateClock() {
+
   const now = new Date();
 
   let hours = now.getHours();
   const minutes = now.getMinutes();
+
   const ampm = hours >= 12 ? "PM" : "AM";
 
   hours = hours % 12;
@@ -92,13 +139,19 @@ function updateClock() {
 
   document.getElementById("ampm").textContent = ampm;
 
-  const options = { weekday: 'long', month: 'short', day: 'numeric' };
+  const options = {
+    weekday: "short",
+    month: "short",
+    day: "numeric"
+  };
+
   document.getElementById("date").textContent =
-    now.toLocaleDateString(undefined, options);
+    now.toLocaleDateString("en-US", options).toUpperCase();
 }
 
 updateClock();
 setInterval(updateClock, 1000);
+
 </script>
 
 </body>
