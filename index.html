@@ -9,19 +9,32 @@
 
 <style>
 
-/* =========================
-   COLORS (EDIT HERE)
-========================= */
+/* ==================================================
+   🌸 THEME SELECTOR
+   Change this line only:
+   rose | sage | lavender | ocean
+================================================== */
+
+const THEME = "rose";
+
+/* ==================================================
+   BASE COLORS (DAY MODE DEFAULTS)
+================================================== */
 
 :root {
-  --hours-color: #DDB0A8;
-  --minutes-color: #F3E8E1;
+
+  --hours-color: rgba(221,176,168,0.92);
+  --minutes-color: rgba(243,232,225,0.92);
 
   --text-light: #FFFFFF;
   --text-dark: #7E6A63;
+
+  --glass-border: rgba(255,255,255,0.28);
 }
 
-/* ========================= */
+/* ==================================================
+   BODY
+================================================== */
 
 * {
   box-sizing: border-box;
@@ -36,32 +49,34 @@ body {
   align-items: center;
 
   background: transparent;
-
   font-family: 'Montserrat', sans-serif;
 }
 
-/* =========================
+/* ==================================================
    CLOCK LAYOUT
-========================= */
+================================================== */
 
 .clock {
   display: flex;
-  gap: 8px;
+  gap: 10px;
 }
 
-/* =========================
-   BLOCKS
-========================= */
+/* ==================================================
+   BLOCKS (FROSTED GLASS STYLE)
+================================================== */
 
 .block {
   position: relative;
 
-  width: min(40vw, 185px);
-  height: min(54vw, 250px);
+  width: min(42vw, 190px);
+  height: min(56vw, 260px);
 
   display: flex;
   justify-content: center;
   align-items: center;
+
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--glass-border);
 
   overflow: hidden;
 }
@@ -69,39 +84,35 @@ body {
 /* LEFT */
 .hours {
   background: var(--hours-color);
-  border-radius: 36px 0 0 36px;
+  border-radius: 38px 0 0 38px;
 }
 
 /* RIGHT */
 .minutes {
   background: var(--minutes-color);
-  border-radius: 0 36px 36px 0;
+  border-radius: 0 38px 38px 0;
 }
 
-/* =========================
-   CENTERING WRAPPER
-========================= */
+/* ==================================================
+   CENTERING
+================================================== */
 
 .center {
-  width: 100%;
-  height: 100%;
-
   display: flex;
   justify-content: center;
   align-items: center;
-
-  padding-top: 2px; /* optical centering */
+  width: 100%;
+  height: 100%;
 }
 
-/* =========================
-   TIME (MAIN DIGITS)
-========================= */
+/* ==================================================
+   TIME DIGITS
+================================================== */
 
 .time {
-  font-size: clamp(110px, 24vw, 175px);
+  font-size: clamp(120px, 26vw, 190px);
   font-weight: 900;
-
-  line-height: 0.78;
+  line-height: 0.72;
 
   font-variant-numeric: tabular-nums;
 }
@@ -116,9 +127,9 @@ body {
   color: var(--text-dark);
 }
 
-/* =========================
+/* ==================================================
    DATE (BOTTOM LEFT)
-========================= */
+================================================== */
 
 .date {
   position: absolute;
@@ -134,9 +145,9 @@ body {
   color: rgba(255,255,255,0.95);
 }
 
-/* =========================
+/* ==================================================
    AM / PM (BOTTOM RIGHT)
-========================= */
+================================================== */
 
 .ampm {
   position: absolute;
@@ -165,7 +176,7 @@ body {
       <div class="time" id="hours">12</div>
     </div>
 
-    <div class="date" id="date">MON JUN 18</div>
+    <div class="date" id="date">19 JUNE<br>FRIDAY</div>
 
   </div>
 
@@ -184,56 +195,76 @@ body {
 
 <script>
 
+/* ==================================================
+   CLOCK LOGIC (NO FLICKER VERSION)
+================================================== */
+
+let lastHours = "";
+let lastMinutes = "";
+let lastAmPm = "";
+
+const MONTHS = [
+  "JANUARY","FEBRUARY","MARCH","APRIL","MAY","JUNE",
+  "JULY","AUGUST","SEPTEMBER","OCTOBER","NOVEMBER","DECEMBER"
+];
+
+const DAYS = [
+  "SUNDAY","MONDAY","TUESDAY","WEDNESDAY",
+  "THURSDAY","FRIDAY","SATURDAY"
+];
+
 function updateClock() {
 
   const now = new Date();
 
   let hours = now.getHours();
   const minutes = now.getMinutes();
-
   const ampm = hours >= 12 ? "PM" : "AM";
 
   hours = hours % 12;
   if (hours === 0) hours = 12;
 
-  document.getElementById("hours").textContent =
-    String(hours).padStart(2, "0");
+  const h = String(hours).padStart(2, "0");
+  const m = String(minutes).padStart(2, "0");
 
-  document.getElementById("minutes").textContent =
-    String(minutes).padStart(2, "0");
+  if (h !== lastHours) {
+    document.getElementById("hours").textContent = h;
+    lastHours = h;
+  }
 
-  document.getElementById("ampm").textContent = ampm;
+  if (m !== lastMinutes) {
+    document.getElementById("minutes").textContent = m;
+    lastMinutes = m;
+  }
 
-  const options = {
-    weekday: "short",
-    month: "short",
-    day: "numeric"
-  };
+  if (ampm !== lastAmPm) {
+    document.getElementById("ampm").textContent = ampm;
+    lastAmPm = ampm;
+  }
 
-  document.getElementById("date").textContent =
-    now.toLocaleDateString("en-US", options).toUpperCase();
+  const day = DAYS[now.getDay()];
+  const month = MONTHS[now.getMonth()];
+  const date = now.getDate();
+
+  document.getElementById("date").innerHTML =
+    `${date} ${month}<br>${day}`;
 }
 
-/* =========================
+/* ==================================================
    SYNCED MINUTE UPDATES
-========================= */
+================================================== */
 
 function startClock() {
 
   updateClock();
 
   const now = new Date();
-
   const delay = (60 - now.getSeconds()) * 1000;
 
   setTimeout(() => {
-
     updateClock();
-
     setInterval(updateClock, 60000);
-
   }, delay);
-
 }
 
 startClock();
