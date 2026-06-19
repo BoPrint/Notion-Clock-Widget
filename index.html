@@ -9,28 +9,36 @@
 
 <style>
 
-/* =========================
-   COLOR SETTINGS
-========================= */
+/* ==========================================
+   CUSTOMIZE COLORS HERE
+   ========================================== */
 
 :root {
+
+  /* Dusty Rose */
   --hours-color: #DDB0A8;
+
+  /* Warm Cream */
   --minutes-color: #F3E8E1;
 
-  --text-light: #FFFFFF;
-  --text-dark: #7E6A63;
+  /* White text */
+  --light-text: #FFFFFF;
 
-  --glass: rgba(255,255,255,0.08);
+  /* Warm taupe text */
+  --dark-text: #7E6A63;
+
 }
 
-/* ========================= */
+/* ========================================== */
 
 * {
   box-sizing: border-box;
 }
 
 body {
+
   margin: 0;
+
   min-height: 100vh;
 
   display: flex;
@@ -38,21 +46,24 @@ body {
   align-items: center;
 
   background: transparent;
-  font-family: 'Montserrat', sans-serif;
-}
 
-/* CLOCK WRAPPER */
+  font-family: 'Montserrat', sans-serif;
+
+}
 
 .clock {
+
   display: flex;
   gap: 8px;
+
 }
 
-/* =========================
+/* ==========================================
    BLOCKS
-========================= */
+   ========================================== */
 
 .block {
+
   position: relative;
 
   width: min(38vw, 180px);
@@ -64,93 +75,112 @@ body {
 
   overflow: hidden;
 
-  /* optional glass feel (very subtle) */
-  background: var(--glass);
-  backdrop-filter: blur(6px);
 }
 
 .hours {
+
   background: var(--hours-color);
+
   border-radius: 34px 0 0 34px;
+
 }
 
 .minutes {
+
   background: var(--minutes-color);
+
   border-radius: 0 34px 34px 0;
+
 }
 
-/* =========================
-   OPTICAL CENTERING LAYER
-========================= */
+/* ==========================================
+   OPTICAL CENTERING
+   ========================================== */
 
 .center {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
 
-  transform: translateY(-2px); /* optical correction */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  transform: translateY(-4px);
+
 }
 
-/* =========================
+/* ==========================================
    TIME
-========================= */
+   ========================================== */
 
 .time {
+
   font-size: clamp(95px, 22vw, 165px);
+
   font-weight: 900;
+
   line-height: 0.85;
 
   transform: scaleY(1.08);
+
   transform-origin: center;
 
-  opacity: 1;
-  transition: opacity 0.25s ease;
+  font-variant-numeric: tabular-nums;
+
 }
 
-/* fade effect class */
-.fade {
-  opacity: 0.35;
+/* Left block */
+
+.hours .time {
+
+  color: var(--light-text);
+
 }
 
-/* =========================
-   DATE + AM/PM
-========================= */
+/* Right block */
+
+.minutes .time {
+
+  color: var(--dark-text);
+
+}
+
+/* ==========================================
+   DATE
+   ========================================== */
 
 .date {
+
   position: absolute;
-  bottom: 14px;
+
   left: 16px;
+  bottom: 16px;
 
   font-size: clamp(10px, 2vw, 13px);
+
   font-weight: 700;
 
   letter-spacing: 1px;
 
-  color: rgba(255,255,255,0.92);
+  color: rgba(255,255,255,0.95);
+
 }
+
+/* ==========================================
+   AM PM
+   ========================================== */
 
 .ampm {
+
   position: absolute;
-  bottom: 14px;
+
   right: 16px;
+  bottom: 16px;
 
   font-size: clamp(12px, 2vw, 16px);
+
   font-weight: 800;
 
-  color: var(--text-dark);
-}
+  color: var(--dark-text);
 
-/* =========================
-   TEXT COLORS PER SIDE
-========================= */
-
-.hours .time,
-.hours .date {
-  color: var(--text-light);
-}
-
-.minutes .time {
-  color: var(--text-dark);
 }
 
 </style>
@@ -162,6 +192,7 @@ body {
 <div class="clock">
 
   <!-- HOURS -->
+
   <div class="block hours">
 
     <div class="center">
@@ -170,11 +201,14 @@ body {
 
     </div>
 
-    <div class="date" id="date">MON JUN 18</div>
+    <div class="date" id="date">
+      MON, JUN 18
+    </div>
 
   </div>
 
   <!-- MINUTES -->
+
   <div class="block minutes">
 
     <div class="center">
@@ -183,7 +217,9 @@ body {
 
     </div>
 
-    <div class="ampm" id="ampm">PM</div>
+    <div class="ampm" id="ampm">
+      PM
+    </div>
 
   </div>
 
@@ -191,33 +227,58 @@ body {
 
 <script>
 
-function fadeUpdate(el, value) {
-  el.classList.add("fade");
-
-  setTimeout(() => {
-    el.textContent = value;
-    el.classList.remove("fade");
-  }, 120);
-}
+let lastHours = "";
+let lastMinutes = "";
+let lastAmPm = "";
 
 function updateClock() {
 
   const now = new Date();
 
   let hours = now.getHours();
+
   const minutes = now.getMinutes();
+
   const ampm = hours >= 12 ? "PM" : "AM";
 
   hours = hours % 12;
-  hours = hours ? hours : 12;
 
-  const hEl = document.getElementById("hours");
-  const mEl = document.getElementById("minutes");
-  const ampmEl = document.getElementById("ampm");
+  if (hours === 0) {
+    hours = 12;
+  }
 
-  fadeUpdate(hEl, String(hours).padStart(2, "0"));
-  fadeUpdate(mEl, String(minutes).padStart(2, "0"));
-  fadeUpdate(ampmEl, ampm);
+  const formattedHours =
+    String(hours).padStart(2, "0");
+
+  const formattedMinutes =
+    String(minutes).padStart(2, "0");
+
+  if (formattedHours !== lastHours) {
+
+    document.getElementById("hours").textContent =
+      formattedHours;
+
+    lastHours = formattedHours;
+
+  }
+
+  if (formattedMinutes !== lastMinutes) {
+
+    document.getElementById("minutes").textContent =
+      formattedMinutes;
+
+    lastMinutes = formattedMinutes;
+
+  }
+
+  if (ampm !== lastAmPm) {
+
+    document.getElementById("ampm").textContent =
+      ampm;
+
+    lastAmPm = ampm;
+
+  }
 
   const options = {
     weekday: "short",
@@ -226,11 +287,13 @@ function updateClock() {
   };
 
   document.getElementById("date").textContent =
-    now.toLocaleDateString("en-US", options).toUpperCase();
+    now.toLocaleDateString("en-US", options)
+       .toUpperCase();
 
 }
 
 updateClock();
+
 setInterval(updateClock, 1000);
 
 </script>
