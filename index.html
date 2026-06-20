@@ -5,36 +5,25 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800;900&display=swap" rel="stylesheet">
 
 <style>
 
-/* ==================================================
-   🌸 THEME SELECTOR
-   Change this line only:
-   rose | sage | lavender | ocean
-================================================== */
-
-const THEME = "rose";
-
-/* ==================================================
-   BASE COLORS (DAY MODE DEFAULTS)
-================================================== */
+/* =========================
+   COLORS (WORKING VERSION)
+========================= */
 
 :root {
-
   --hours-color: rgba(221,176,168,0.92);
   --minutes-color: rgba(243,232,225,0.92);
 
   --text-light: #FFFFFF;
   --text-dark: #7E6A63;
 
-  --glass-border: rgba(255,255,255,0.28);
+  --glass-border: rgba(255,255,255,0.25);
 }
 
-/* ==================================================
-   BODY
-================================================== */
+/* ========================= */
 
 * {
   box-sizing: border-box;
@@ -52,24 +41,24 @@ body {
   font-family: 'Montserrat', sans-serif;
 }
 
-/* ==================================================
+/* =========================
    CLOCK LAYOUT
-================================================== */
+========================= */
 
 .clock {
   display: flex;
   gap: 10px;
 }
 
-/* ==================================================
-   BLOCKS (FROSTED GLASS STYLE)
-================================================== */
+/* =========================
+   BLOCKS
+========================= */
 
 .block {
   position: relative;
 
-  width: min(42vw, 190px);
-  height: min(56vw, 260px);
+  width: min(180px, 40vw);
+  height: min(240px, 52vw);
 
   display: flex;
   justify-content: center;
@@ -77,25 +66,23 @@ body {
 
   backdrop-filter: blur(10px);
   border: 1px solid var(--glass-border);
-
-  overflow: hidden;
 }
 
 /* LEFT */
 .hours {
   background: var(--hours-color);
-  border-radius: 38px 0 0 38px;
+  border-radius: 36px 0 0 36px;
 }
 
 /* RIGHT */
 .minutes {
   background: var(--minutes-color);
-  border-radius: 0 38px 38px 0;
+  border-radius: 0 36px 36px 0;
 }
 
-/* ==================================================
-   CENTERING
-================================================== */
+/* =========================
+   CENTERING (IMPORTANT FIX)
+========================= */
 
 .center {
   display: flex;
@@ -105,19 +92,21 @@ body {
   height: 100%;
 }
 
-/* ==================================================
-   TIME DIGITS
-================================================== */
+/* =========================
+   TIME (FIXED PROPORTIONS)
+========================= */
 
 .time {
-  font-size: clamp(120px, 26vw, 190px);
+  font-size: clamp(100px, 20vw, 150px);
   font-weight: 900;
-  line-height: 0.72;
+  line-height: 0.9;
 
   font-variant-numeric: tabular-nums;
+
+  letter-spacing: -2px; /* 👈 FIXES “too wide” look */
 }
 
-/* COLORS PER SIDE */
+/* COLORS */
 
 .hours .time {
   color: var(--text-light);
@@ -127,35 +116,32 @@ body {
   color: var(--text-dark);
 }
 
-/* ==================================================
-   DATE (BOTTOM LEFT)
-================================================== */
+/* =========================
+   DATE
+========================= */
 
 .date {
   position: absolute;
+  left: 14px;
+  bottom: 14px;
 
-  left: 16px;
-  bottom: 16px;
-
-  font-size: clamp(10px, 2vw, 13px);
+  font-size: 12px;
   font-weight: 700;
-
   letter-spacing: 1px;
 
   color: rgba(255,255,255,0.95);
 }
 
-/* ==================================================
-   AM / PM (BOTTOM RIGHT)
-================================================== */
+/* =========================
+   AM / PM
+========================= */
 
 .ampm {
   position: absolute;
+  right: 14px;
+  bottom: 14px;
 
-  right: 16px;
-  bottom: 16px;
-
-  font-size: clamp(12px, 2vw, 16px);
+  font-size: 14px;
   font-weight: 800;
 
   color: var(--text-dark);
@@ -169,49 +155,27 @@ body {
 
 <div class="clock">
 
-  <!-- HOURS -->
   <div class="block hours">
-
     <div class="center">
       <div class="time" id="hours">12</div>
     </div>
-
     <div class="date" id="date">19 JUNE<br>FRIDAY</div>
-
   </div>
 
-  <!-- MINUTES -->
   <div class="block minutes">
-
     <div class="center">
       <div class="time" id="minutes">00</div>
     </div>
-
     <div class="ampm" id="ampm">PM</div>
-
   </div>
 
 </div>
 
 <script>
 
-/* ==================================================
-   CLOCK LOGIC (NO FLICKER VERSION)
-================================================== */
-
-let lastHours = "";
-let lastMinutes = "";
-let lastAmPm = "";
-
-const MONTHS = [
-  "JANUARY","FEBRUARY","MARCH","APRIL","MAY","JUNE",
-  "JULY","AUGUST","SEPTEMBER","OCTOBER","NOVEMBER","DECEMBER"
-];
-
-const DAYS = [
-  "SUNDAY","MONDAY","TUESDAY","WEDNESDAY",
-  "THURSDAY","FRIDAY","SATURDAY"
-];
+let lastH = "";
+let lastM = "";
+let lastA = "";
 
 function updateClock() {
 
@@ -227,20 +191,30 @@ function updateClock() {
   const h = String(hours).padStart(2, "0");
   const m = String(minutes).padStart(2, "0");
 
-  if (h !== lastHours) {
+  if (h !== lastH) {
     document.getElementById("hours").textContent = h;
-    lastHours = h;
+    lastH = h;
   }
 
-  if (m !== lastMinutes) {
+  if (m !== lastM) {
     document.getElementById("minutes").textContent = m;
-    lastMinutes = m;
+    lastM = m;
   }
 
-  if (ampm !== lastAmPm) {
+  if (ampm !== lastA) {
     document.getElementById("ampm").textContent = ampm;
-    lastAmPm = ampm;
+    lastA = ampm;
   }
+
+  const MONTHS = [
+    "JANUARY","FEBRUARY","MARCH","APRIL","MAY","JUNE",
+    "JULY","AUGUST","SEPTEMBER","OCTOBER","NOVEMBER","DECEMBER"
+  ];
+
+  const DAYS = [
+    "SUNDAY","MONDAY","TUESDAY","WEDNESDAY",
+    "THURSDAY","FRIDAY","SATURDAY"
+  ];
 
   const day = DAYS[now.getDay()];
   const month = MONTHS[now.getMonth()];
@@ -250,24 +224,10 @@ function updateClock() {
     `${date} ${month}<br>${day}`;
 }
 
-/* ==================================================
-   SYNCED MINUTE UPDATES
-================================================== */
+/* SYNC */
 
-function startClock() {
-
-  updateClock();
-
-  const now = new Date();
-  const delay = (60 - now.getSeconds()) * 1000;
-
-  setTimeout(() => {
-    updateClock();
-    setInterval(updateClock, 60000);
-  }, delay);
-}
-
-startClock();
+updateClock();
+setInterval(updateClock, 60000);
 
 </script>
 
