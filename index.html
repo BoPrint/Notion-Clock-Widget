@@ -10,21 +10,76 @@
 <style>
 
 /* =========================
-   COLORS
+   THEME COLORS
 ========================= */
 
 :root {
 
-  /* 🌸 Dusty Rose (slightly pinker) */
   --hours-color: rgba(217,181,178,0.92);
-
-  /* ☁️ Warm Cream */
   --minutes-color: rgba(243,232,225,0.92);
 
   --text-light: #FFFFFF;
   --text-dark: #7E6A63;
+}
 
-  --glass-border: rgba(255,255,255,0.28);
+/* =========================
+   FRAME STYLE SWITCH (JS CONTROLLED)
+========================= */
+
+.widget {
+  position: relative;
+
+  display: flex;
+  gap: 0px;
+
+  border-radius: 42px;
+
+  overflow: hidden;
+
+  /* default = none */
+  border: none;
+  box-shadow: none;
+}
+
+/* =========================
+   FRAME VARIANTS
+========================= */
+
+/* 1. NONE (cleanest) */
+.frame-none {
+  border: none;
+  box-shadow: none;
+}
+
+/* 2. BORDER (app icon style) */
+.frame-border {
+  border: 1px solid rgba(255,255,255,0.22);
+}
+
+/* 3. GLOW (inset glass depth) */
+.frame-glow {
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.14);
+}
+
+/* 4. SHINE (top highlight) */
+.frame-shine::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 6%;
+  right: 6%;
+  height: 1px;
+  background: rgba(255,255,255,0.18);
+  z-index: 10;
+}
+
+/* 5. GRADIENT (soft material depth) */
+.frame-gradient {
+  background: linear-gradient(
+    to bottom,
+    rgba(255,255,255,0.06),
+    rgba(255,255,255,0.00)
+  );
 }
 
 /* ========================= */
@@ -35,7 +90,7 @@
 
 body {
   margin: 0;
-  min-height: 100vh;
+  height: 100vh;
 
   display: flex;
   justify-content: center;
@@ -46,29 +101,20 @@ body {
 }
 
 /* =========================
-   CLOCK LAYOUT
+   CLOCK STRUCTURE
 ========================= */
 
 .clock {
   display: flex;
-  gap: 0px; /* IMPORTANT for divider test */
   align-items: stretch;
 }
 
 /* =========================
-   DIVIDER (NEW)
+   DIVIDER (invisible by default)
 ========================= */
 
 .divider {
-  width: 4px;
-  height: 70%;
-
-  align-self: center;
-
-  background: rgba(255, 255, 255, 0.22);
-  border-radius: 999px;
-
-  backdrop-filter: blur(6px);
+  width: 0px;
 }
 
 /* =========================
@@ -86,7 +132,6 @@ body {
   align-items: center;
 
   backdrop-filter: blur(10px);
-  border: 1px solid var(--glass-border);
 }
 
 /* LEFT */
@@ -102,7 +147,7 @@ body {
 }
 
 /* =========================
-   CENTER
+   TEXT
 ========================= */
 
 .center {
@@ -110,27 +155,19 @@ body {
   justify-content: center;
   align-items: center;
   width: 100%;
-  height: 100%;
 }
-
-/* =========================
-   TIME
-========================= */
 
 .time {
   font-size: clamp(100px, 20vw, 150px);
   font-weight: 900;
   line-height: 0.9;
+  letter-spacing: -2px;
 
   font-variant-numeric: tabular-nums;
-
-  letter-spacing: -2px;
 }
 
-/* COLORS */
-
 .hours .time {
-  color: var(--text-light);
+  color: #FFFFFF;
 }
 
 .minutes .time {
@@ -138,18 +175,16 @@ body {
 }
 
 /* =========================
-   DAY + AM/PM ALIGNMENT TEST
+   LABELS
 ========================= */
 
 .day {
   position: absolute;
-
   left: 16px;
   bottom: 16px;
 
   font-size: 14px;
   font-weight: 800;
-
   letter-spacing: 1px;
 
   color: rgba(255,255,255,0.96);
@@ -157,13 +192,11 @@ body {
 
 .ampm {
   position: absolute;
-
   right: 16px;
   bottom: 16px;
 
   font-size: 14px;
   font-weight: 800;
-
   letter-spacing: 1px;
 
   color: var(--text-dark);
@@ -175,36 +208,49 @@ body {
 
 <body>
 
-<div class="clock">
+<!-- CHANGE FRAME STYLE HERE -->
+<script>
+const FRAME_STYLE = "border"; 
+// options: none | border | glow | shine | gradient
+</script>
 
-  <!-- HOURS -->
-  <div class="block hours">
+<div class="clock" id="clock">
 
-    <div class="center">
-      <div class="time" id="hours">12</div>
+  <div class="widget" id="widget">
+
+    <div class="block hours">
+      <div class="center">
+        <div class="time" id="hours">12</div>
+      </div>
+      <div class="day" id="day">FRIDAY</div>
     </div>
 
-    <div class="day" id="day">FRIDAY</div>
+    <div class="divider"></div>
 
-  </div>
-
-  <!-- DIVIDER -->
-  <div class="divider"></div>
-
-  <!-- MINUTES -->
-  <div class="block minutes">
-
-    <div class="center">
-      <div class="time" id="minutes">00</div>
+    <div class="block minutes">
+      <div class="center">
+        <div class="time" id="minutes">00</div>
+      </div>
+      <div class="ampm" id="ampm">PM</div>
     </div>
-
-    <div class="ampm" id="ampm">PM</div>
 
   </div>
 
 </div>
 
 <script>
+
+/* =========================
+   FRAME SWITCHER
+========================= */
+
+const widget = document.getElementById("widget");
+
+widget.classList.add("frame-" + FRAME_STYLE);
+
+/* =========================
+   CLOCK LOGIC
+========================= */
 
 let lastH = "";
 let lastM = "";
@@ -247,8 +293,6 @@ function updateClock() {
   document.getElementById("day").textContent =
     DAYS[now.getDay()];
 }
-
-/* SYNC */
 
 updateClock();
 setInterval(updateClock, 60000);
