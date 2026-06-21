@@ -9,31 +9,22 @@
 
 <style>
 
-.divider {
-  width: 4px;
-  height: 70%;
-
-  background: rgba(255, 255, 255, 0.22);
-
-  border-radius: 999px;
-
-  backdrop-filter: blur(6px);
-
-  align-self: center;
-}
-
 /* =========================
-   COLORS (WORKING VERSION)
+   COLORS
 ========================= */
 
 :root {
-  --hours-color: rgba(221,176,168,0.92);
+
+  /* 🌸 Dusty Rose (slightly pinker) */
+  --hours-color: rgba(217,181,178,0.92);
+
+  /* ☁️ Warm Cream */
   --minutes-color: rgba(243,232,225,0.92);
 
   --text-light: #FFFFFF;
   --text-dark: #7E6A63;
 
-  --glass-border: rgba(255,255,255,0.25);
+  --glass-border: rgba(255,255,255,0.28);
 }
 
 /* ========================= */
@@ -60,7 +51,24 @@ body {
 
 .clock {
   display: flex;
-  gap: 10px;
+  gap: 0px; /* IMPORTANT for divider test */
+  align-items: stretch;
+}
+
+/* =========================
+   DIVIDER (NEW)
+========================= */
+
+.divider {
+  width: 4px;
+  height: 70%;
+
+  align-self: center;
+
+  background: rgba(255, 255, 255, 0.22);
+  border-radius: 999px;
+
+  backdrop-filter: blur(6px);
 }
 
 /* =========================
@@ -84,17 +92,17 @@ body {
 /* LEFT */
 .hours {
   background: var(--hours-color);
-  border-radius: 36px 0 0 36px;
+  border-radius: 42px 0 0 42px;
 }
 
 /* RIGHT */
 .minutes {
   background: var(--minutes-color);
-  border-radius: 0 36px 36px 0;
+  border-radius: 0 42px 42px 0;
 }
 
 /* =========================
-   CENTERING (IMPORTANT FIX)
+   CENTER
 ========================= */
 
 .center {
@@ -106,7 +114,7 @@ body {
 }
 
 /* =========================
-   TIME (FIXED PROPORTIONS)
+   TIME
 ========================= */
 
 .time {
@@ -116,7 +124,7 @@ body {
 
   font-variant-numeric: tabular-nums;
 
-  letter-spacing: -2px; /* 👈 FIXES “too wide” look */
+  letter-spacing: -2px;
 }
 
 /* COLORS */
@@ -130,32 +138,33 @@ body {
 }
 
 /* =========================
-   DATE
+   DAY + AM/PM ALIGNMENT TEST
 ========================= */
 
-.date {
+.day {
   position: absolute;
-  left: 14px;
-  bottom: 14px;
 
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 1px;
-
-  color: rgba(255,255,255,0.95);
-}
-
-/* =========================
-   AM / PM
-========================= */
-
-.ampm {
-  position: absolute;
-  right: 14px;
-  bottom: 14px;
+  left: 16px;
+  bottom: 16px;
 
   font-size: 14px;
   font-weight: 800;
+
+  letter-spacing: 1px;
+
+  color: rgba(255,255,255,0.96);
+}
+
+.ampm {
+  position: absolute;
+
+  right: 16px;
+  bottom: 16px;
+
+  font-size: 14px;
+  font-weight: 800;
+
+  letter-spacing: 1px;
 
   color: var(--text-dark);
 }
@@ -168,18 +177,29 @@ body {
 
 <div class="clock">
 
+  <!-- HOURS -->
   <div class="block hours">
+
     <div class="center">
       <div class="time" id="hours">12</div>
     </div>
-    <div class="date" id="date">19 JUNE<br>FRIDAY</div>
+
+    <div class="day" id="day">FRIDAY</div>
+
   </div>
 
+  <!-- DIVIDER -->
+  <div class="divider"></div>
+
+  <!-- MINUTES -->
   <div class="block minutes">
+
     <div class="center">
       <div class="time" id="minutes">00</div>
     </div>
+
     <div class="ampm" id="ampm">PM</div>
+
   </div>
 
 </div>
@@ -219,22 +239,13 @@ function updateClock() {
     lastA = ampm;
   }
 
-  const MONTHS = [
-    "JANUARY","FEBRUARY","MARCH","APRIL","MAY","JUNE",
-    "JULY","AUGUST","SEPTEMBER","OCTOBER","NOVEMBER","DECEMBER"
-  ];
-
   const DAYS = [
     "SUNDAY","MONDAY","TUESDAY","WEDNESDAY",
     "THURSDAY","FRIDAY","SATURDAY"
   ];
 
-  const day = DAYS[now.getDay()];
-  const month = MONTHS[now.getMonth()];
-  const date = now.getDate();
-
-  document.getElementById("date").innerHTML =
-    `${date} ${month}<br>${day}`;
+  document.getElementById("day").textContent =
+    DAYS[now.getDay()];
 }
 
 /* SYNC */
