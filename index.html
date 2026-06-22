@@ -9,80 +9,28 @@
 
 <style>
 
-/* =========================
-   THEME COLORS
-========================= */
+/* =====================================================
+   🌸 CLOCK WIDGET v3.0 — MASTER DESIGN SYSTEM
+===================================================== */
 
 :root {
 
-  --hours-color: rgba(217,181,178,0.92);
+  /* 🌸 Dusty Rose (restored salmon tone) */
+  --hours-color: rgba(221,176,168,0.92);
+
+  /* 🧈 Warm Cream */
   --minutes-color: rgba(243,232,225,0.92);
 
+  /* TEXT */
   --text-light: #FFFFFF;
   --text-dark: #7E6A63;
+
+  /* FRAME (Option A — subtle app tile border) */
+  --frame: rgba(255,255,255,0.22);
+
 }
 
-/* =========================
-   FRAME STYLE SWITCH (JS CONTROLLED)
-========================= */
-
-.widget {
-  position: relative;
-
-  display: flex;
-  gap: 0px;
-
-  border-radius: 42px;
-
-  overflow: hidden;
-
-  /* default = none */
-  border: none;
-  box-shadow: none;
-}
-
-/* =========================
-   FRAME VARIANTS
-========================= */
-
-/* 1. NONE (cleanest) */
-.frame-none {
-  border: none;
-  box-shadow: none;
-}
-
-/* 2. BORDER (app icon style) */
-.frame-border {
-  border: 1px solid rgba(255,255,255,0.22);
-}
-
-/* 3. GLOW (inset glass depth) */
-.frame-glow {
-  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.14);
-}
-
-/* 4. SHINE (top highlight) */
-.frame-shine::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 6%;
-  right: 6%;
-  height: 1px;
-  background: rgba(255,255,255,0.18);
-  z-index: 10;
-}
-
-/* 5. GRADIENT (soft material depth) */
-.frame-gradient {
-  background: linear-gradient(
-    to bottom,
-    rgba(255,255,255,0.06),
-    rgba(255,255,255,0.00)
-  );
-}
-
-/* ========================= */
+/* ===================================================== */
 
 * {
   box-sizing: border-box;
@@ -100,26 +48,24 @@ body {
   font-family: 'Montserrat', sans-serif;
 }
 
-/* =========================
-   CLOCK STRUCTURE
-========================= */
+/* =====================================================
+   🧩 MASTER WIDGET FRAME
+===================================================== */
 
-.clock {
+.widget {
   display: flex;
   align-items: stretch;
+
+  border-radius: 42px;
+
+  border: 1px solid var(--frame);
+
+  overflow: hidden;
 }
 
-/* =========================
-   DIVIDER (invisible by default)
-========================= */
-
-.divider {
-  width: 0px;
-}
-
-/* =========================
-   BLOCKS
-========================= */
+/* =====================================================
+   🕰 CLOCK LAYOUT
+===================================================== */
 
 .block {
   position: relative;
@@ -146,40 +92,44 @@ body {
   border-radius: 0 42px 42px 0;
 }
 
-/* =========================
-   TEXT
-========================= */
+/* =====================================================
+   🔢 TIME DISPLAY
+===================================================== */
 
 .center {
   display: flex;
   justify-content: center;
   align-items: center;
+
   width: 100%;
+  height: 100%;
 }
 
 .time {
   font-size: clamp(100px, 20vw, 150px);
   font-weight: 900;
   line-height: 0.9;
+
   letter-spacing: -2px;
 
   font-variant-numeric: tabular-nums;
 }
 
 .hours .time {
-  color: #FFFFFF;
+  color: var(--text-light);
 }
 
 .minutes .time {
   color: var(--text-dark);
 }
 
-/* =========================
-   LABELS
-========================= */
+/* =====================================================
+   📍 LABELS (ALIGNED BASELINE SYSTEM)
+===================================================== */
 
 .day {
   position: absolute;
+
   left: 16px;
   bottom: 16px;
 
@@ -192,6 +142,7 @@ body {
 
 .ampm {
   position: absolute;
+
   right: 16px;
   bottom: 16px;
 
@@ -208,31 +159,27 @@ body {
 
 <body>
 
-<!-- CHANGE FRAME STYLE HERE -->
-<script>
-const FRAME_STYLE = "gradient"; 
-// options: none | border | glow | shine | gradient
-</script>
+<div class="widget">
 
-<div class="clock" id="clock">
+  <!-- HOURS -->
+  <div class="block hours">
 
-  <div class="widget" id="widget">
-
-    <div class="block hours">
-      <div class="center">
-        <div class="time" id="hours">12</div>
-      </div>
-      <div class="day" id="day">FRIDAY</div>
+    <div class="center">
+      <div class="time" id="hours">12</div>
     </div>
 
-    <div class="divider"></div>
+    <div class="day" id="day">FRIDAY</div>
 
-    <div class="block minutes">
-      <div class="center">
-        <div class="time" id="minutes">00</div>
-      </div>
-      <div class="ampm" id="ampm">PM</div>
+  </div>
+
+  <!-- MINUTES -->
+  <div class="block minutes">
+
+    <div class="center">
+      <div class="time" id="minutes">00</div>
     </div>
+
+    <div class="ampm" id="ampm">PM</div>
 
   </div>
 
@@ -240,17 +187,9 @@ const FRAME_STYLE = "gradient";
 
 <script>
 
-/* =========================
-   FRAME SWITCHER
-========================= */
-
-const widget = document.getElementById("widget");
-
-widget.classList.add("frame-" + FRAME_STYLE);
-
-/* =========================
-   CLOCK LOGIC
-========================= */
+/* =====================================================
+   🕒 CLOCK LOGIC (CLEAN + STABLE)
+===================================================== */
 
 let lastH = "";
 let lastM = "";
@@ -294,6 +233,7 @@ function updateClock() {
     DAYS[now.getDay()];
 }
 
+/* INIT */
 updateClock();
 setInterval(updateClock, 60000);
 
