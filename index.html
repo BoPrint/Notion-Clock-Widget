@@ -9,28 +9,21 @@
 
 <style>
 
-/* =====================================================
-   🌸 CLOCK WIDGET v3.0 — MASTER DESIGN SYSTEM
-===================================================== */
+/* =========================
+   COLORS
+========================= */
 
 :root {
-
-  /* 🌸 Dusty Rose (restored salmon tone) */
   --hours-color: rgba(221,176,168,0.92);
-
-  /* 🧈 Warm Cream */
   --minutes-color: rgba(243,232,225,0.92);
 
-  /* TEXT */
   --text-light: #FFFFFF;
   --text-dark: #7E6A63;
 
-  /* FRAME (Option A — subtle app tile border) */
-  --frame: rgba(255,255,255,0.22);
-
+  --glass-border: rgba(255,255,255,0.25);
 }
 
-/* ===================================================== */
+/* ========================= */
 
 * {
   box-sizing: border-box;
@@ -38,7 +31,7 @@
 
 body {
   margin: 0;
-  height: 100vh;
+  min-height: 100vh;
 
   display: flex;
   justify-content: center;
@@ -48,24 +41,19 @@ body {
   font-family: 'Montserrat', sans-serif;
 }
 
-/* =====================================================
-   🧩 MASTER WIDGET FRAME
-===================================================== */
+/* =========================
+   CLOCK LAYOUT
+========================= */
 
-.widget {
+.clock {
   display: flex;
-  align-items: stretch;
 
-  border-radius: 42px;
-
-  border: 1px solid var(--frame);
-
-  overflow: hidden;
+  gap: 12px; /* ✅ REAL VISUAL SEPARATION */
 }
 
-/* =====================================================
-   🕰 CLOCK LAYOUT
-===================================================== */
+/* =========================
+   BLOCKS
+========================= */
 
 .block {
   position: relative;
@@ -78,23 +66,25 @@ body {
   align-items: center;
 
   backdrop-filter: blur(10px);
+
+  border: 1px solid var(--glass-border);
 }
 
 /* LEFT */
 .hours {
   background: var(--hours-color);
-  border-radius: 42px 0 0 42px;
+  border-radius: 42px;
 }
 
 /* RIGHT */
 .minutes {
   background: var(--minutes-color);
-  border-radius: 0 42px 42px 0;
+  border-radius: 42px;
 }
 
-/* =====================================================
-   🔢 TIME DISPLAY
-===================================================== */
+/* =========================
+   TEXT
+========================= */
 
 .center {
   display: flex;
@@ -116,16 +106,16 @@ body {
 }
 
 .hours .time {
-  color: var(--text-light);
+  color: #FFFFFF;
 }
 
 .minutes .time {
   color: var(--text-dark);
 }
 
-/* =====================================================
-   📍 LABELS (ALIGNED BASELINE SYSTEM)
-===================================================== */
+/* =========================
+   LABELS
+========================= */
 
 .day {
   position: absolute;
@@ -159,9 +149,8 @@ body {
 
 <body>
 
-<div class="widget">
+<div class="clock">
 
-  <!-- HOURS -->
   <div class="block hours">
 
     <div class="center">
@@ -172,7 +161,6 @@ body {
 
   </div>
 
-  <!-- MINUTES -->
   <div class="block minutes">
 
     <div class="center">
@@ -186,10 +174,6 @@ body {
 </div>
 
 <script>
-
-/* =====================================================
-   🕒 CLOCK LOGIC (CLEAN + STABLE)
-===================================================== */
 
 let lastH = "";
 let lastM = "";
@@ -233,7 +217,7 @@ function updateClock() {
     DAYS[now.getDay()];
 }
 
-/* INIT */
+/* SYNC */
 updateClock();
 setInterval(updateClock, 60000);
 
